@@ -154,6 +154,8 @@
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
+            position: relative;
+            height: 80px;
         }
 
         .choice-button {
@@ -187,7 +189,7 @@
             background: #e0e0e0;
             color: #333;
             min-width: 150px;
-            position: relative;
+            position: fixed;
         }
 
         /* Response Screen */
@@ -250,7 +252,7 @@
             <div class="question">Mag iinom ba tayo?</div>
             <div class="button-container">
                 <button class="choice-button yes-button" onclick="showResponse()">Oo naman</button>
-                <button class="choice-button no-button" id="noButton" onmouseover="dodgeButton()" onmouseenter="dodgeButton()">Hindi, next week na</button>
+                <button class="choice-button no-button" id="noButton" onmousemove="dodgeButton(event)">Hindi, next week na</button>
             </div>
         </div>
 
@@ -282,11 +284,12 @@
             document.getElementById('responseScreen').style.display = 'block';
         }
 
-        function dodgeButton() {
+        function dodgeButton(event) {
             const noButton = document.getElementById('noButton');
-            const randomX = Math.random() * 300 - 150;
-            const randomY = Math.random() * 300 - 150;
-            noButton.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            const randomX = Math.random() * 400 - 200;
+            const randomY = Math.random() * 400 - 200;
+            noButton.style.left = (event.clientX + randomX) + 'px';
+            noButton.style.top = (event.clientY + randomY) + 'px';
         }
     </script>
 </body>
