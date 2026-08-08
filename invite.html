@@ -155,7 +155,7 @@
             justify-content: center;
             flex-wrap: wrap;
             position: relative;
-            height: 80px;
+            min-height: 80px;
         }
 
         .choice-button {
@@ -165,7 +165,6 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -174,6 +173,7 @@
             background: linear-gradient(135deg, #8b0000, #ff6b6b);
             color: white;
             min-width: 150px;
+            transition: all 0.3s ease;
         }
 
         .yes-button:hover {
@@ -189,7 +189,8 @@
             background: #e0e0e0;
             color: #333;
             min-width: 150px;
-            position: fixed;
+            position: absolute;
+            transition: all 0.1s ease;
         }
 
         /* Response Screen */
@@ -252,7 +253,7 @@
             <div class="question">Mag iinom ba tayo?</div>
             <div class="button-container">
                 <button class="choice-button yes-button" onclick="showResponse()">Oo naman</button>
-                <button class="choice-button no-button" id="noButton" onmousemove="dodgeButton(event)">Hindi, next week na</button>
+                <button class="choice-button no-button" id="noButton" onmousemove="dodgeButton(event)" ontouchmove="dodgeButton(event)">Hindi, next week na</button>
             </div>
         </div>
 
@@ -286,10 +287,39 @@
 
         function dodgeButton(event) {
             const noButton = document.getElementById('noButton');
-            const randomX = Math.random() * 400 - 200;
-            const randomY = Math.random() * 400 - 200;
-            noButton.style.left = (event.clientX + randomX) + 'px';
-            noButton.style.top = (event.clientY + randomY) + 'px';
+            const container = document.querySelector('.button-container');
+            
+            if (!container) return;
+            
+            const containerRect = container.getBoundingClientRect();
+            const buttonWidth = noButton.offsetWidth;
+            const buttonHeight = noButton.offsetHeight;
+            
+            // Get cursor position
+            let cursorX, cursorY;
+            if (event.touches) {
+                cursorX = event.touches[0].clientX;
+                cursorY = event.touches[0].clientY;
+            } else {
+                cursorX = event.clientX;
+                cursorY = event.clientY;
+            }
+            
+            // Calculate new position within container bounds
+            let newX, newY;
+            let maxX = containerRect.width - buttonWidth - 20;
+            let maxY = containerRect.height - buttonHeight - 20;
+            
+            // Keep minimum values positive
+            maxX = Math.max(0, maxX);
+            maxY = Math.max(0, maxY);
+            
+            newX = Math.random() * maxX;
+            newY = Math.random() * maxY;
+            
+            // Ensure button doesn't go off screen
+            noButton.style.left = Math.max(0, Math.min(newX, maxX)) + 'px';
+            noButton.style.top = Math.max(0, Math.min(newY, maxY)) + 'px';
         }
     </script>
 </body>
