@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drinking Invitation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Main Background - Alcohol/Drinking Theme */
+        .main-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #8b0000 0%, #ff6b6b 50%, #ffa500 100%);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .beer-glass {
+            position: absolute;
+            opacity: 0.1;
+            font-size: 150px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .beer-glass:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .beer-glass:nth-child(2) {
+            top: 50%;
+            right: 5%;
+            animation-delay: 1s;
+        }
+
+        .beer-glass:nth-child(3) {
+            bottom: 10%;
+            left: 10%;
+            animation-delay: 2s;
+        }
+
+        /* Content Box */
+        .content-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        /* Enter Button Screen */
+        .enter-screen {
+            display: none;
+        }
+
+        .enter-button {
+            background: linear-gradient(135deg, #8b0000, #ff6b6b);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px 60px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .enter-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.4);
+        }
+
+        .enter-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Question Screen */
+        .question-screen {
+            display: none;
+        }
+
+        .question {
+            font-size: 36px;
+            font-weight: bold;
+            color: #8b0000;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .choice-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .yes-button {
+            background: linear-gradient(135deg, #8b0000, #ff6b6b);
+            color: white;
+            min-width: 150px;
+        }
+
+        .yes-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.4);
+        }
+
+        .yes-button:active {
+            transform: scale(0.98);
+        }
+
+        .no-button {
+            background: #e0e0e0;
+            color: #333;
+            min-width: 150px;
+            position: relative;
+        }
+
+        /* Response Screen */
+        .response-screen {
+            display: none;
+        }
+
+        .response-message {
+            font-size: 48px;
+            font-weight: bold;
+            color: #8b0000;
+            line-height: 1.4;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .emoji {
+            font-size: 60px;
+            margin: 20px 0;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <div class="loading-text">Preparing the party...</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer">
+        <div class="beer-glass">🍺</div>
+        <div class="beer-glass">🍻</div>
+        <div class="beer-glass">🥃</div>
+
+        <!-- Enter Screen -->
+        <div class="content-box enter-screen" id="enterScreen">
+            <h1 style="color: #8b0000; margin-bottom: 30px; font-size: 32px;">Welcome to the Party!</h1>
+            <button class="enter-button" onclick="showQuestion()">Enter</button>
+        </div>
+
+        <!-- Question Screen -->
+        <div class="content-box question-screen" id="questionScreen">
+            <div class="question">Mag iinom ba tayo?</div>
+            <div class="button-container">
+                <button class="choice-button yes-button" onclick="showResponse()">Oo naman</button>
+                <button class="choice-button no-button" id="noButton" onmouseover="dodgeButton()" onmouseenter="dodgeButton()">Hindi, next week na</button>
+            </div>
+        </div>
+
+        <!-- Response Screen -->
+        <div class="content-box response-screen" id="responseScreen">
+            <div class="emoji">🍺</div>
+            <div class="response-message">Okay, otw po! 🎉</div>
+            <div class="emoji">🥳</div>
+        </div>
+    </div>
+
+    <script>
+        // Show loading screen for 3 seconds, then show enter screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'flex';
+                document.getElementById('enterScreen').style.display = 'block';
+            }, 3000);
+        });
+
+        function showQuestion() {
+            document.getElementById('enterScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'block';
+        }
+
+        function showResponse() {
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('responseScreen').style.display = 'block';
+        }
+
+        function dodgeButton() {
+            const noButton = document.getElementById('noButton');
+            const randomX = Math.random() * 300 - 150;
+            const randomY = Math.random() * 300 - 150;
+            noButton.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+    </script>
+</body>
+</html>
